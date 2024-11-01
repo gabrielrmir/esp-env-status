@@ -1,10 +1,11 @@
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include "DHT.h"
 #include "variables.h"
 
 DHT dht(DHT_PIN, DHT_TYPE);
 
-WiFiClient client;
+WiFiClientSecure client;
 
 void setup() {
   Serial.begin(115200);
@@ -39,14 +40,31 @@ void httpUpdate() {
   data += "\"umidade\":\""+String(humid)+"\",";
   data += "\"ruido\":\""+String(noise)+"\"}";
 
+  client.setInsecure();
   if (client.connect(SERVER_NAME, SERVER_PORT)) {
     client.println("POST "+String(SERVER_PATH)+" HTTP/1.1");
-    client.println("Host: " + String(SERVER_NAME)+":"+String(SERVER_PORT));
+    client.println("Host: " + String(SERVER_NAME));
     client.println("Content-Type: application/json");
     client.println("Content-Length: "+String(data.length()));
     client.println("Connection: close");
     client.println();
     client.println(data);
+
+    while (client.connected()) {
+      String line = client.readStringUntil('\n');
+      if (line == "\r") {
+        Serial.println("headers received");
+        break;
+      }
+    }
+    // if there are incoming bytes available
+    // from the server, read them and print them:
+    while (client.available()) {
+      char c = client.read();
+      Serial.write(c);
+    }
+
+    client.stop();
   } else {
     Serial.println("Error: Could not connect to server");
   }
