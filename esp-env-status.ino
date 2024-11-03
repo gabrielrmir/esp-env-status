@@ -6,6 +6,7 @@
 DHT dht(DHT_PIN, DHT_TYPE);
 
 WiFiClientSecure client;
+String mac;
 
 void setup() {
   Serial.begin(115200);
@@ -22,6 +23,9 @@ void setup() {
   }
   Serial.println(WiFi.localIP());
 
+  mac = WiFi.macAddress();
+  Serial.println(mac);
+
   Serial.println("Setup done");
 }
 
@@ -31,7 +35,7 @@ void httpUpdate(float temp, float humid, float noise) {
     return;
   }
 
-  String data = "{\"maquina_id\":\"1\",";
+  String data = "{\"maquina_id\":\""+mac+"\",";
   data += "\"temperatura\":\""+String(temp)+"\",";
   data += "\"umidade\":\""+String(humid)+"\",";
   data += "\"ruido\":\""+String(noise)+"\"}";
