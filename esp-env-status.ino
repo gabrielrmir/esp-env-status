@@ -73,7 +73,9 @@ void httpUpdate(float temp, float humid, float noise) {
 void loop() {
   float temp = dht.readTemperature(false, false);
   float humid = dht.readHumidity(false);
+  
   float noise = analogRead(KY037_PIN);
+  noise = map(noise, 0, 4095, 100, 0);
 
   httpUpdate(temp, humid, noise);
 
