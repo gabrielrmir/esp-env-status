@@ -73,10 +73,10 @@ void loop() {
 
   httpUpdate(temp, humid, noise);
 
-  // Serial.println("DHT Temperature: " + String(temp) + "C");
-  // Serial.println("DHT Humidity: " + String(humid) + "%");
-  // Serial.println("Noise level: " + String(analogRead(4)));
-  // Serial.println("===========");
+  Serial.println("DHT Temperature: " + String(temp) + "C");
+  Serial.println("DHT Humidity: " + String(humid) + "%");
+  Serial.println("Noise level: " + String(noise));
+  Serial.println("");
 
   delay(DELAY_MS);
 }
