@@ -25,15 +25,11 @@ void setup() {
   Serial.println("Setup done");
 }
 
-void httpUpdate() {
+void httpUpdate(float temp, float humid, float noise) {
   if (WiFi.status() != WL_CONNECTED) {
     Serial.print("Unable to send http request. Not connected.");
     return;
   }
-
-  int temp = dht.readTemperature(false, false);
-  int humid = dht.readHumidity(false);
-  int noise = analogRead(KY037_PIN);
 
   String data = "{\"maquina_id\":\"1\",";
   data += "\"temperatura\":\""+String(temp)+"\",";
@@ -71,7 +67,11 @@ void httpUpdate() {
 }
 
 void loop() {
-  httpUpdate();
+  float temp = dht.readTemperature(false, false);
+  float humid = dht.readHumidity(false);
+  float noise = analogRead(KY037_PIN);
+
+  httpUpdate(temp, humid, noise);
 
   // Serial.println("DHT Temperature: " + String(temp) + "C");
   // Serial.println("DHT Humidity: " + String(humid) + "%");
